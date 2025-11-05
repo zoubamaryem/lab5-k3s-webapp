@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K3s Web Application - Lab 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .subtitle { color: #666; font-size: 14px; }
+        .db-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .db-connected { background: #d4edda; color: #155724; }
+        .db-disconnected { background: #f8d7da; color: #721c24; }
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .users-list {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .users-list h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .user-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .user-card:hover {
+            background: #e9ecef;
+            transition: background 0.3s;
+        }
+        .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .user-email {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .user-date {
+            color: #999;
+            font-size: 12px;
+        }
+        .no-users {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-style: italic;
+        }
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 K3s Web Application</h1>
+            <p class="subtitle">Lab 5 - Deploying Web App with Database on Kubernetes</p>
+            <div class="db-status {% if db_status == 'Connecté' %}db-connected{% else %}db-disconnected{% endif %}">
+                Base de données: {{ db_status }}
+            </div>
+        </div>
+        
+        <div class="form-card">
+            <h2 style="color: #333; margin-bottom: 20px;">📝 Ajouter un utilisateur</h2>
+            <form action="/add" method="POST">
+                <div class="form-group">
+                    <label for="name">Nom complet :</label>
+                    <input type="text" id="name" name="name" required placeholder="Ex: Mohamed Ali">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email :</label>
+                    <input type="email" id="email" name="email" required placeholder="Ex: mohamed.ali@example.com">
+                </div>
+                <button type="submit">➕ Ajouter l'utilisateur</button>
+            </form>
+        </div>
+        
+        <div class="users-list">
+            <h2>👥 Liste des utilisateurs <span class="badge">{{ users|length }}</span></h2>
+            {% if users %}
+                {% for user in users %}
+                <div class="user-card">
+                    <div class="user-name">{{ user[1] }}</div>
+                    <div class="user-email">✉️ {{ user[2] }}</div>
+                    <div class="user-date">🕒 Ajouté le: {{ user[3].strftime('%d/%m/%Y à %H:%M') }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-users">
+                    Aucun utilisateur enregistré pour le moment.<br>
+                    Utilisez le formulaire ci-dessus pour ajouter le premier utilisateur !
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
