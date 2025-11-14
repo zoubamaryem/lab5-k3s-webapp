@@ -62,4 +62,5 @@ lab5-k3s-webapp/
 ```bash
 curl -sfL https://get.k3s.io | sh -
 kubectl get nodes
+
 Access the Application: http://192.168.56.10:30080/
